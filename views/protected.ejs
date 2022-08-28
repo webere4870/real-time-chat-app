@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Design by foolishdeveloper.com -->
+    <title>Protected</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+    <!--Stylesheet-->
+    <link rel="stylesheet" href="/stylesheet.css">
+</head>
+<body>
+    <img style="position: absolute; top: 30px; right: 140px; border-radius: 50%;box-shadow: 0 0 20px gray; height: 50px" src="<%=picture%>" alt="">
+    <a id="logout" href="/logout" style="position: absolute; top: 20px; right: 20px"><button type="button" class="btn btn-primary btn-lg">Logout</button></a>
+    <div class="background">
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+    <div style="display: flex; justify-content: center; align-items: center; flex-direction: column; height: 100vh; width: 100vw; position: absolute; top: 0; left: 0">
+        <h1>Hello, <%=displayName%>!</h1>
+    </div>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Design by foolishdeveloper.com -->
+    <title>Login</title>
+ 
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+    <!--Stylesheet-->
+    <link rel="stylesheet" href="/stylesheet.css">
+</head>
+<body>
+    <div class="background">
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+    <form method="post" action="/login">
+        <h3>Login Here</h3>
+        <% if(error) {%>
+          <h4 class="errorMessage"><%=error %> </h4>
+        <% } %> 
+        <label for="username">Email</label>
+        <input type="text" placeholder="Email" name="username" id="username">
+        <label for="password">Password</label>
+        <input type="password" placeholder="Password" name="password" id="password">
+        <button style="margin-top: 30px;">Log In</button>
+        <a href="/register"><div>Register</div></a>
+
+        <div class="social">
+          <a href="/auth/google"><div class="go" id="go"><i class="fab fa-google"></i>  Google</div></a>
+          <a href="/auth/facebook"><div class="fb" id="fb"><i class="fab fa-facebook"></i>  Facebook</div></a>
+          
+        </div>
+    </form>
+</body>
+</html>
