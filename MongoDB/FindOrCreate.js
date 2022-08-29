@@ -1,25 +1,42 @@
 let UserSchema = require('./Schema')
 let bcrypt = require('bcrypt')
 
-async function FindOrCreate(username, password, res)
+async function FindOrCreate(username, password, provider, name, picture)
 {
     return new Promise((resolve, reject)=>
     {
-        UserSchema.findOne({_id: username}, (err, result)=>
+        UserSchema.findOne({_id: username}, async (err, result)=>
         {
-            if(result == null)
+            if(!result && !provider)
             {
                 bcrypt.genSalt(10, (err, salt) => {
                     bcrypt.hash(password, salt, async function(err, hash) {
-                        let newRecord = await UserSchema.create({_id: username, hash: hash, salt: salt})
+                        let newRecord = await UserSchema.create({_id: username, hash: hash, salt: salt, name: name, picture: picture, provider: "E-Web-Software"})
                         await newRecord.save()
-                        resolve({inserted: true})
+                        resolve({accepted: true})
                     });
                 })
             }
+            else if(!result)
+            {
+                let newRecord = await UserSchema.create({_id: username, hash: "", salt: "", picture: picture, provider: provider, name: name})
+                newRecord.save()
+                resolve({accepted: true})
+            }
+            else if(!provider)
+            {
+                resolve({accepted: false})
+            }
             else
             {
-                resolve({inserted: false})
+                if(provider == result.provider)
+                {
+                    resolve({accepted: true})
+                }
+                else
+                {
+                    resolve({accepted: false})
+                }
             }
         })
     })

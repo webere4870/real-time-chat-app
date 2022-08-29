@@ -6,7 +6,7 @@ require('dotenv').config()
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: "https://jwt-oauth-app.herokuapp.com/google/callback"
+  callbackURL: "http://localhost:3000/google/callback"
 },
 function(accessToken, refreshToken, profile, done) {
   return done(null, profile);

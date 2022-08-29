@@ -10,7 +10,7 @@ router.get("/auth/google", passport.authenticate('google', {scope: ['profile', '
 router.get("/auth/facebook", passport.authenticate('facebook', {session: false}))
 router.post("/register", (req, res)=>
 {
-    let {username, password} = req.body
+    let {username, password, name} = req.body
     res.render('login', {error: ""})
 })
 
@@ -21,20 +21,30 @@ router.get('/google/callback',
     // Successful authentication, redirect home.
 
   let [token,profile] = CreateToken(req.user)
-
-    res.cookie("jwt", token)
-    res.redirect('/protected');
-
+    let response = await FindOrCreate(profile.email, profile.password, profile.provider, profile.displayName, profile.picture)
+    if(response.accepted == false)
+    {
+      res.render("login", {error: "User already exists"})
+    }
+    else{
+      res.cookie("jwt", token)
+      res.redirect('/protected');
+    }
 });
 
 
-router.get('/auth/facebook/callback',passport.authenticate('facebook', { failureRedirect: '/login', session: false }),
+router.get('/facebook/callback',passport.authenticate('facebook', { failureRedirect: '/login', session: false }),
 async function(req, res) {
   let [token,profile] = CreateToken(req.user)
-
-
+  let response = await FindOrCreate(profile.email, profile.password, profile.provider, profile.displayName, profile.picture)
+  if(response.accepted == false)
+  {
+    res.render("login", {error: "User already exists"})
+  }
+  else{
     res.cookie("jwt", token)
     res.redirect('/protected');
+  }
 
 });
 

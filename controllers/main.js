@@ -55,9 +55,9 @@ router.get("/register", (req, res)=>
 
 router.post("/register", async (req, res)=>
 {
-    let {username, password} = req.body
-    let insertion = await FindOrCreate(username, password, res)
-    if(insertion.inserted == false)
+    let {username, password, name} = req.body
+    let insertion = await FindOrCreate(username, password, null, name, "/person-circle.svg")
+    if(insertion.accepted == false)
     {
         res.render("register", {error: "User already exists"})  
     }
