@@ -12,7 +12,7 @@ function CreateToken(user)
         {
             profile.picture = user._json.picture.data.url
         }
-    let token = jwt.sign(profile, process.env.JWT_KEY, {expiresIn: 60})
+    let token = jwt.sign(profile, process.env.JWT_KEY, {expiresIn: 6000})
     return [token, profile]
 }
 

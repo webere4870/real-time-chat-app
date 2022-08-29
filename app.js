@@ -8,8 +8,12 @@ let bodyParser = require('body-parser')
 let cookieParser = require('cookie-parser')
 let path = require('path')
 let mongoose = require('mongoose')
+let http = require('http')
+let io = require('socket.io')
 require('./utils/userData')
 require('./MongoDB/Mongo')
+let server = http.createServer(app)
+
 
 
 
@@ -51,7 +55,7 @@ app.use(passport.initialize())
 app.use("/", pageRouter)
 app.use("/", authRouter)
 
-app.listen(process.env.PORT || 3000, ()=>
+server.listen(process.env.PORT || 3000, ()=>
 {
     console.log("Listening on port 3000")
 })

@@ -4,6 +4,7 @@ let ValidateJWT = require('./../utils/ValidateJWT')
 let FindOrCreate = require('./../MongoDB/FindOrCreate')
 let VerifyUser = require('./../MongoDB/VerifyUser')
 let CreateToken = require('./../utils/CreateToken')
+let UserModel = require('./../MongoDB/Schema')
 
 function isLoggedIn(req, res, next)
 {
@@ -39,7 +40,6 @@ router.get("/protected", ValidateJWT, (req, res)=>
     console.log(name, email, href)
     */
     let profile = req.JWT
-    console.log(profile, "profile")
     res.render("protected", profile)
 })
 
@@ -82,7 +82,7 @@ router.post("/login", async (req, res)=>
                 provider: "Node.js Server"}
             let [token, profile] = CreateToken(user)
             res.cookie("jwt", token)
-            res.redirect("/protected")
+            res.redirect("/chat")
         }
         else
         {
@@ -93,6 +93,19 @@ router.post("/login", async (req, res)=>
     {
         res.redirect("/login", {error: "Invalid Password"})
     })
+})
+
+router.get("/chat", ValidateJWT,(req, res)=>
+{
+    console.log(req.JWT)
+    res.render("chat", req.JWT)
+})
+
+router.get("/users?", async (req, res)=>
+{
+    let {username} = req.query
+    let userList = await UserModel.find({'name': {'$regex': username}}, { _id: 1, name: 1, picture: 1 })
+    res.json({userList: userList})
 })
 
 module.exports = router

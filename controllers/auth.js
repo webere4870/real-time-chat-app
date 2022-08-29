@@ -28,7 +28,7 @@ router.get('/google/callback',
     }
     else{
       res.cookie("jwt", token)
-      res.redirect('/protected');
+      res.redirect('/chat');
     }
 });
 
@@ -43,7 +43,7 @@ async function(req, res) {
   }
   else{
     res.cookie("jwt", token)
-    res.redirect('/protected');
+    res.redirect('/chat');
   }
 
 });
