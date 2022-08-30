@@ -8,6 +8,7 @@ $().ready(()=>
         let chatList = await fetch(`/messages?username=${$(evt.currentTarget).attr("id")}`)
         selected = $(evt.currentTarget).attr("id")
         let jsonList = await chatList.json()
+        console.log(jsonList)
         let roomName = [selected, jsonList.current]
         roomName.sort()
         let newRoomString = ""
@@ -22,6 +23,7 @@ $().ready(()=>
 
         function messageWriter(message, li)
         {
+            console.log(message)
             if(message.to == jsonList.current)
             {
                 li.innerHTML = `<li class="me">
@@ -59,17 +61,21 @@ $().ready(()=>
             newLi = messageWriter(message, li)
             document.querySelector("#chat").appendChild(newLi)
         }
+        const element = document.getElementById("chat");
+        element.scrollTop = element.scrollHeight;
 
         socket.on("roomMessage", (messageProfile)=>
         {
             let li = document.createElement("li")
             newLi = messageWriter(messageProfile, li)
             document.querySelector("#chat").appendChild(newLi)
+            const element = document.getElementById("chat");
+            element.scrollTop = element.scrollHeight;
         })
 
         $("#send").click((evt)=>
         {
-            let messageProfile = {current: jsonList.current, other: jsonList. other, message: $("#message").val()}
+            let messageProfile = {current: jsonList.current, other: jsonList. other, message: $("#message").val(), to: jsonList.other, from: jsonList.current}
             socket.emit("roomMessage", messageProfile)
         })
     })
@@ -102,12 +108,13 @@ $().ready(()=>
     });
     $("#search").on("focus", (evt)=>
     {
-        $("ul").css("overflow-y", "hidden")
+        $("#overDrop").css("overflow-y", "hidden")
         $("#dropDown").slideToggle(400)
     })
 
     $("#innerDropDown svg").click((evt)=>
     {
+        $("#overDrop").css("overflow-y", "scroll")
         $("#dropDown").slideToggle(400)
     })
 

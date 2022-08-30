@@ -5,6 +5,9 @@
     margin: 0;
     box-sizing: border-box;
 }
+*{
+    scroll-behavior: smooth;
+}
 body{
     background-color: #080710;
     max-height: 100vh;
@@ -334,7 +337,7 @@ aside li h3{
 }
 
 main header{
-	height:110px;
+	height:10%;
     width: 100%;
     display: flex;
     justify-content: flex-end;
@@ -365,9 +368,10 @@ main header h3{
 	margin:0;
 	list-style-type:none;
 	overflow-y:scroll;
-	height:535px;
+	height:60%;
 	border-top:2px solid #fff;
 	border-bottom:2px solid #fff;
+    z-index: 2;
 }
 #chat li{
 	padding:10px 30px;
@@ -418,7 +422,7 @@ main header h3{
 }
 
 main footer{
-	height:155px;
+	height:30%;
 	padding:20px 30px 10px 20px;
 }
 main footer textarea{
