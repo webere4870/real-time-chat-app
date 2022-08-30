@@ -19,13 +19,12 @@ $().ready(()=>
         while (document.querySelector("#chat").firstChild) {
             document.querySelector("#chat").removeChild(document.querySelector("#chat").firstChild)
         }
-    
-        for(let message of jsonList.chatList)
+
+        function messageWriter(message, li)
         {
-            let li
-            if(message.from == message.current)
+            if(message.to == jsonList.current)
             {
-                li = `<li class="me">
+                li.innerHTML = `<li class="me">
                 <div class="entete">
                     <h3>${message.datetime}</h3>
                     <h2>${jsonList.currentName}</h2>
@@ -39,7 +38,7 @@ $().ready(()=>
             }
             else
             {
-                li = `<li class="you">
+                li.innerHTML = `<li class="you">
                 <div class="entete">
                     <h3>${message.datetime}</h3>
                     <h2>${jsonList.otherName}</h2>
@@ -51,7 +50,28 @@ $().ready(()=>
                 </div>
             </li>`
             }
+            return li
         }
+    
+        for(let message of jsonList.chatList)
+        {
+            let li = document.createElement("li")
+            newLi = messageWriter(message, li)
+            document.querySelector("#chat").appendChild(newLi)
+        }
+
+        socket.on("roomMessage", (messageProfile)=>
+        {
+            let li = document.createElement("li")
+            newLi = messageWriter(messageProfile, li)
+            document.querySelector("#chat").appendChild(newLi)
+        })
+
+        $("#send").click((evt)=>
+        {
+            let messageProfile = {current: jsonList.current, other: jsonList. other, message: $("#message").val()}
+            socket.emit("roomMessage", messageProfile)
+        })
     })
 
     $("#send").click(async (evt)=>
@@ -77,7 +97,7 @@ $().ready(()=>
                     online
                 </h3>
             </div>`
-            document.querySelector("#innerDropDown").append(li)
+            document.querySelector("#innerDropDown").appendChild(li)
         }
     });
     $("#search").on("focus", (evt)=>

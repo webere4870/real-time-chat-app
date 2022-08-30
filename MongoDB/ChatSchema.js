@@ -1,6 +1,6 @@
 let mongoose = require('mongoose')
 let ChatSchema = new mongoose.Schema({
-    _id: String,
+    room: String,
     to: String,
     from: String,
     datetime: Date,
