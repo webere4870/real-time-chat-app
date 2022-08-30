@@ -4,6 +4,7 @@ let app = express()
 let session = require('express-session')
 let pageRouter = require('./controllers/main')
 let authRouter = require('./controllers/auth')
+let chatRouter = require('./controllers/chat')
 let bodyParser = require('body-parser')
 let cookieParser = require('cookie-parser')
 let path = require('path')
@@ -13,7 +14,7 @@ let io = require('socket.io')
 require('./utils/userData')
 require('./MongoDB/Mongo')
 let server = http.createServer(app)
-
+require('./Socket')(server)
 
 
 
@@ -54,6 +55,7 @@ app.use(passport.initialize())
 
 app.use("/", pageRouter)
 app.use("/", authRouter)
+app.use("/", chatRouter)
 
 server.listen(process.env.PORT || 3000, ()=>
 {

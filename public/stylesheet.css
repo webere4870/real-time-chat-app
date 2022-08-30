@@ -314,6 +314,13 @@ aside li h3{
 	display:inline-block;
 	margin-right:7px;
 }
+
+.statusPic
+{
+    width: 20px;
+    border-radius: 50%;
+}
+
 .green{
 	background-color:#58b666;
 }

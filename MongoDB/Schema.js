@@ -9,4 +9,4 @@ let UserSchema = new mongoose.Schema({
     provider: String
 })
 
-module.exports = mongoose.model("chatschema", UserSchema)
+module.exports = mongoose.model("ChatUserSchema", UserSchema)
