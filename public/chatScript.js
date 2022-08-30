@@ -1,5 +1,17 @@
 $().ready(()=>
 {
+    $('#innerDropDown').on("click", "li", async (evt)=>
+    {
+        let chatList = await fetch(`/messages?username=${$(evt.currentTarget).attr("id")}`)
+        
+        let jsonList = await chatList.json()
+        console.log(jsonList)
+
+        while (document.querySelector("#innerDropDown").firstChild) {
+            parent.removeChild(parent.firstChild);
+        }
+    
+    })
     $('#search').on('input', async function() {
         // do something
         let userList = await fetch(`/users?username=${$("#search").val()}`)
@@ -8,6 +20,7 @@ $().ready(()=>
         for(let temp of userArr)
         {
             let li = document.createElement("li")
+            li.id = temp._id
             li.innerHTML = 
             `<img src="${temp.picture}" alt="">
             <div>

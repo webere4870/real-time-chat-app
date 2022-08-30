@@ -5,6 +5,7 @@ let FindOrCreate = require('./../MongoDB/FindOrCreate')
 let VerifyUser = require('./../MongoDB/VerifyUser')
 let CreateToken = require('./../utils/CreateToken')
 let UserModel = require('./../MongoDB/Schema')
+let ChatModel = require('./../MongoDB/ChatSchema')
 
 function isLoggedIn(req, res, next)
 {
@@ -106,6 +107,16 @@ router.get("/users?", async (req, res)=>
     let {username} = req.query
     let userList = await UserModel.find({'name': {'$regex': username}}, { _id: 1, name: 1, picture: 1 })
     res.json({userList: userList})
+})
+
+router.get("/messages?", ValidateJWT,async (req, res)=>
+{
+    let {username} = req.query
+    let currentUserPicture = req.JWT.picture
+    let otherUserPicture = await UserModel.findOne({_id: username})
+    
+    let chatList = await ChatModel.find({$or: [{to: username, from: req.JWT.email}, {from: req.JWT.email, to: username}]})
+    res.json({chatList: chatList, [username]: currentUserPicture, [req.JWT.email]: otherUserPicture.picture})
 })
 
 module.exports = router
