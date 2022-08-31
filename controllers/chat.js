@@ -5,6 +5,7 @@ let ChatModel = require('./../MongoDB/ChatSchema')
 let router = express.Router()
 
 
+
 router.get("/users?", async (req, res)=>
 {
     let {username} = req.query
@@ -28,6 +29,44 @@ router.post("/newMessage", async(req, res)=>
     let message = req.body
     
     res.json({success: true})
+})
+
+router.get("/changeActivity?", ValidateJWT,async (req, res)=>
+{
+    let {active} = req.query
+    console.log(active)
+    if(active == "true")
+    {
+        let data = await UserModel.updateOne({_id: req.JWT.email}, {$set:{active: true}})
+
+    }
+    else
+    {
+        let data = await UserModel.updateOne({_id: req.JWT.email}, {$set: {active: false}})
+
+    }
+
+    res.json({username: req.JWT.email})
+})
+
+router.post("/changeActivityServerSide", async (res, req)=>
+{
+    console.log(req.body)
+    if(active == "true")
+    {
+        let data = await UserModel.updateOne({_id: username}, {$set:{active: true}})
+
+    }
+    else
+    {
+        let data = await UserModel.updateOne({_id: username}, {$set: {active: false}})
+
+    }
+})
+
+router.get("/getUsername", ValidateJWT, (req, res)=>
+{
+    res.json({email: req.JWT.email})
 })
 
 module.exports = router

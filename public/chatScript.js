@@ -1,6 +1,22 @@
 let selected = null
 let currentRoom = null
+let roomList = []
 let socket = io("localhost:3000")
+
+socket.on("getUsername", async (evt)=>
+{
+    let username = await fetch("/getUsername")
+    let json = await username.json()
+    console.log(json.email)
+    socket.emit("username", json.email)
+})
+let changeActivity = fetch("/changeActivity?active=true").then((email)=>
+{
+    email.json().then(async (result)=>
+    {
+        
+    })
+})
 
 function messageWriter(message, li, jsonList)
 {

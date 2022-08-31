@@ -31,8 +31,14 @@
                         <div>
                             <h2><%=chatList[counter].name %></h2>
                             <h3>
-                                <span class="status orange"></span>
-                                offline
+                                <% if(chatList[counter].active == true) {%> 
+                                <span class="status green"></span>
+                                Online
+                                <% }else { %> 
+                
+                                    <span class="status orange"></span>
+                                    Offline
+                                <% } %> 
                             </h3>
                         </div>
                     </li>
