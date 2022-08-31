@@ -10,6 +10,12 @@ module.exports = (server)=>
     io.on("connection", async (socket)=>
     { 
         socket.emit("getUsername", null)
+
+        socket.on("userStatus", (statusObject)=>
+        {
+            console.log(statusObject)
+            socket.to(statusObject.room).emit("userStatus", {user: statusObject.currentUser, active: statusObject.active})
+        })
         
         socket.on("username", (username)=>
         {
@@ -30,10 +36,6 @@ module.exports = (server)=>
 
         socket.on("newRoom", (roomName)=>
         {
-            if(room)
-            {
-                socket.leave(room)
-            }
             console.log(socket.id + " joined " + roomName)
             socket.join(roomName)
             room = roomName

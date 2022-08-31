@@ -49,6 +49,12 @@ router.get("/changeActivity?", ValidateJWT,async (req, res)=>
     res.json({username: req.JWT.email})
 })
 
+router.get("/userList", ValidateJWT, async (req, res)=>
+{
+    let activityList = await ChatModel.where({to: req.JWT.email}).distinct("room")
+    res.json({activityList: activityList, username: req.JWT.email})
+})
+
 router.post("/changeActivityServerSide", async (res, req)=>
 {
     console.log(req.body)

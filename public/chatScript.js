@@ -1,6 +1,7 @@
 let selected = null
 let currentRoom = null
 let roomList = []
+let currentUser = ""
 let socket = io("localhost:3000")
 
 socket.on("getUsername", async (evt)=>
@@ -17,6 +18,42 @@ let changeActivity = fetch("/changeActivity?active=true").then((email)=>
         
     })
 })
+
+
+socket.on("userStatus", (statusObject)=>
+{
+    console.log("here")
+    if(statusObject.active == true)
+    {
+        $(`li[data-id="${statusObject.user}"] span`).attr("class", "status green")
+        $(`li[data-id="${statusObject.user}"] .statusText`).text("Online")
+    }
+    else
+    {
+        $(`li[data-id=${statusObject.user}] span`).attr("class", "status orange")
+        $(`li[data-id=${statusObject.user}] .statusText`).text("Offline")
+    }
+})
+
+
+let userList = fetch('/userList').then(async (result)=>
+{
+    let newRes = await result.json()
+    roomList = newRes.activityList
+    currentUser = newRes.username
+    for(let temp of roomList)
+    {
+        console.log("here room")
+        socket.emit("newRoom", temp)
+    }
+    for(let temp of roomList)
+    {
+        socket.emit("userStatus", {currentUser: currentUser, room: temp, active: true})
+    }
+})
+
+
+
 
 function messageWriter(message, li, jsonList)
 {
