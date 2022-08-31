@@ -19,8 +19,8 @@ router.get("/messages?", ValidateJWT,async (req, res)=>
     let otherUserPicture = await UserModel.findOne({_id: username})
     
     let chatList = await ChatModel.find({$or: [{to: username, from: req.JWT.email}, {to: req.JWT.email, from: username}]})
-
-    res.json({chatList: chatList, [username]: currentUserPicture, [req.JWT.email]: otherUserPicture.picture, current: req.JWT.email, other: otherUserPicture._id, currentName: req.JWT.name, otherName: otherUserPicture.name})
+    console.log(otherUserPicture, "bre", currentUserPicture)
+    res.json({chatList: chatList, [req.JWT.email]: currentUserPicture, [username]: otherUserPicture.picture, current: req.JWT.email, other: otherUserPicture._id, currentName: req.JWT.name, otherName: otherUserPicture.name})
 })
 
 router.post("/newMessage", async(req, res)=>

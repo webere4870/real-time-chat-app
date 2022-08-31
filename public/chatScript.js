@@ -1,8 +1,87 @@
 let selected = null
 let currentRoom = null
 let socket = io("localhost:3000")
+
+function messageWriter(message, li, jsonList)
+{
+    console.log(message)
+    if(message.from == jsonList.current)
+    {
+        li.innerHTML = `<li class="me">
+        <div class="entete">
+            <h3>${message.datetime}</h3>
+            <h2>${jsonList.currentName}</h2>
+            <img src='${jsonList[jsonList.current]}' alt='' class='statusPic'>
+        </div>
+        <div class="triangle"></div>
+        <div class="message">
+            ${message.message}
+        </div>
+    </li>`
+    }
+    else
+    {
+        li.innerHTML = `<li class="you">
+        <div class="entete">
+            <h3>${message.datetime}</h3>
+            <h2>${jsonList.otherName}</h2>
+            <img src='${jsonList[jsonList.other]}' alt='' class='statusPic'>
+        </div>
+        <div class="triangle"></div>
+        <div class="message">
+            ${message.message}
+        </div>
+    </li>`
+    }
+    return li
+}
+    
+
 $().ready(()=>
 {
+    $("#overDrop").on("click", ">li", async (evt)=>
+    {
+        let chatList = await fetch(`/messages?username=${$(evt.currentTarget).attr("data-id")}`)
+        selected = $(evt.currentTarget).attr("data-id")
+        let jsonList = await chatList.json()
+        console.log(jsonList)
+        let roomName = [selected, jsonList.current]
+        roomName.sort()
+        let newRoomString = ""
+        for(let temp of roomName)
+        {
+            newRoomString += temp
+        }
+        socket.emit("newRoom", newRoomString)
+
+        while (document.querySelector("#chat").firstChild) {
+            document.querySelector("#chat").removeChild(document.querySelector("#chat").firstChild)
+        }
+
+        for(let message of jsonList.chatList)
+        {
+            let li = document.createElement("li")
+            newLi = messageWriter(message, li, jsonList)
+            document.querySelector("#chat").appendChild(newLi)
+        }
+        const element = document.getElementById("chat");
+        element.scrollTop = element.scrollHeight;
+
+        socket.on("roomMessage", (messageProfile)=>
+        {
+            let li = document.createElement("li")
+            newLi = messageWriter(messageProfile, li, jsonList)
+            document.querySelector("#chat").appendChild(newLi)
+            const element = document.getElementById("chat");
+            element.scrollTop = element.scrollHeight;
+        })
+
+        $("#send").click((evt)=>
+        {
+            let messageProfile = {current: jsonList.current, other: jsonList. other, message: $("#message").val(), to: jsonList.other, from: jsonList.current}
+            socket.emit("roomMessage", messageProfile)
+        })
+    })
     $('#innerDropDown').on("click", "li", async (evt)=>
     {
         let chatList = await fetch(`/messages?username=${$(evt.currentTarget).attr("id")}`)
@@ -21,44 +100,10 @@ $().ready(()=>
             document.querySelector("#chat").removeChild(document.querySelector("#chat").firstChild)
         }
 
-        function messageWriter(message, li)
-        {
-            console.log(message)
-            if(message.to == jsonList.current)
-            {
-                li.innerHTML = `<li class="me">
-                <div class="entete">
-                    <h3>${message.datetime}</h3>
-                    <h2>${jsonList.currentName}</h2>
-                    <img src='${jsonList[jsonList.current]}' alt='' class='statusPic'>
-                </div>
-                <div class="triangle"></div>
-                <div class="message">
-                    ${message.message}
-                </div>
-            </li>`
-            }
-            else
-            {
-                li.innerHTML = `<li class="you">
-                <div class="entete">
-                    <h3>${message.datetime}</h3>
-                    <h2>${jsonList.otherName}</h2>
-                    <img src='${jsonList[jsonList.other]}' alt='' class='statusPic'>
-                </div>
-                <div class="triangle"></div>
-                <div class="message">
-                    ${message.message}
-                </div>
-            </li>`
-            }
-            return li
-        }
-    
         for(let message of jsonList.chatList)
         {
             let li = document.createElement("li")
-            newLi = messageWriter(message, li)
+            newLi = messageWriter(message, li, jsonList)
             document.querySelector("#chat").appendChild(newLi)
         }
         const element = document.getElementById("chat");
@@ -80,10 +125,6 @@ $().ready(()=>
         })
     })
 
-    $("#send").click(async (evt)=>
-    {
-        
-    })
 
     $('#search').on('input', async function() {
         // do something

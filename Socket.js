@@ -14,6 +14,10 @@ module.exports = (server)=>
 
         socket.on("newRoom", (roomName)=>
         {
+            if(room)
+            {
+                socket.leave(room)
+            }
             console.log(socket.id + " joined " + roomName)
             socket.join(roomName)
             room = roomName
