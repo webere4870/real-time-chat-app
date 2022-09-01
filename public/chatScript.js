@@ -10,6 +10,23 @@ socket.on("getUsername", async (evt)=>
     let json = await username.json()
     console.log(json.email)
     socket.emit("username", json.email)
+    
+
+    let userList = fetch('/userList').then(async (result)=>
+    {
+        let newRes = await result.json()
+        roomList = newRes.activityList
+        currentUser = newRes.username
+        for(let temp of roomList)
+        {
+            console.log("here room")
+            socket.emit("newRoom", temp)
+        }
+        for(let temp of roomList)
+        {
+            socket.emit("userStatus", {currentUser: currentUser, room: temp, active: true})
+        }
+    })
 })
 let changeActivity = fetch("/changeActivity?active=true").then((email)=>
 {
@@ -22,35 +39,25 @@ let changeActivity = fetch("/changeActivity?active=true").then((email)=>
 
 socket.on("userStatus", (statusObject)=>
 {
-    console.log("here")
+    console.log(statusObject)
     if(statusObject.active == true)
     {
-        $(`li[data-id="${statusObject.user}"] span`).attr("class", "status green")
-        $(`li[data-id="${statusObject.user}"] .statusText`).text("Online")
+        console.log("Active")
+        $('li').attr("data-id", statusObject.user).find("span").attr("class", "status green")
+        $('li').attr("data-id", statusObject.user).find(".statusText").text("Online")
+        // $(`li[data-id="${statusObject.user}"] span`).attr("class", "status green")
+        // $(`li[data-id="${statusObject.user}"] .statusText`).text("Online")
     }
     else
     {
-        $(`li[data-id=${statusObject.user}] span`).attr("class", "status orange")
-        $(`li[data-id=${statusObject.user}] .statusText`).text("Offline")
+        console.log("Inavtive")
+        $('li').attr("data-id", statusObject.user).find("span").attr("class", "status orange")
+        $('li').attr("data-id", statusObject.user).find(".statusText").text("Offline")
+        // $(`li[data-id=${statusObject.user}] span`).attr("class", "status orange")
+        // $(`li[data-id=${statusObject.user}] .statusText`).text("Offline")
     }
 })
 
-
-let userList = fetch('/userList').then(async (result)=>
-{
-    let newRes = await result.json()
-    roomList = newRes.activityList
-    currentUser = newRes.username
-    for(let temp of roomList)
-    {
-        console.log("here room")
-        socket.emit("newRoom", temp)
-    }
-    for(let temp of roomList)
-    {
-        socket.emit("userStatus", {currentUser: currentUser, room: temp, active: true})
-    }
-})
 
 
 
