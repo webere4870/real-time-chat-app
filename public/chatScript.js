@@ -2,13 +2,44 @@ let selected = null
 let currentRoom = null
 let roomList = []
 let currentUser = ""
+let talkingToWho = null
 let socket = io("localhost:3000")
+
+socket.on("roomMessage", (messageProfile)=>
+{
+    console.log(messageProfile, "profiler")
+    if(messageProfile.to === talkingToWho)
+    {
+        let li = document.createElement("li")
+        newLi = messageWriter(messageProfile, li)
+        document.querySelector("#chat").appendChild(newLi)
+        const element = document.getElementById("chat");
+        element.scrollTop = element.scrollHeight;
+    }
+    else
+    {
+        if(messageProfile.from === talkingToWho)
+        {
+            let li = document.createElement("li")
+            newLi = messageWriter(messageProfile, li)
+            document.querySelector("#chat").appendChild(newLi)
+            const element = document.getElementById("chat");
+            element.scrollTop = element.scrollHeight;
+        }
+        else
+        {
+            alert("Stuff")
+        }
+    }
+    
+})
 
 socket.on("getUsername", async (evt)=>
 {
     let username = await fetch("/getUsername")
     let json = await username.json()
     console.log(json.email)
+    currentUser = json.email
     socket.emit("username", json.email)
     
 
@@ -65,13 +96,13 @@ socket.on("userStatus", (statusObject)=>
 function messageWriter(message, li, jsonList)
 {
     console.log(message)
-    if(message.from == jsonList.current)
+    if(message.from == currentUser)
     {
         li.innerHTML = `<li class="me">
         <div class="entete">
             <h3>${message.datetime}</h3>
-            <h2>${jsonList.currentName}</h2>
-            <img src='${jsonList[jsonList.current]}' alt='' class='statusPic'>
+            <h2>${message.from}</h2>
+            
         </div>
         <div class="triangle"></div>
         <div class="message">
@@ -84,8 +115,8 @@ function messageWriter(message, li, jsonList)
         li.innerHTML = `<li class="you">
         <div class="entete">
             <h3>${message.datetime}</h3>
-            <h2>${jsonList.otherName}</h2>
-            <img src='${jsonList[jsonList.other]}' alt='' class='statusPic'>
+            <h2>${message.from}</h2>
+            
         </div>
         <div class="triangle"></div>
         <div class="message">
@@ -102,6 +133,7 @@ $().ready(()=>
     $("#overDrop").on("click", ">li", async (evt)=>
     {
         let chatList = await fetch(`/messages?username=${$(evt.currentTarget).attr("data-id")}`)
+        talkingToWho = $(evt.currentTarget).attr("data-id")
         selected = $(evt.currentTarget).attr("data-id")
         let jsonList = await chatList.json()
         console.log(jsonList)
@@ -127,14 +159,6 @@ $().ready(()=>
         const element = document.getElementById("chat");
         element.scrollTop = element.scrollHeight;
 
-        socket.on("roomMessage", (messageProfile)=>
-        {
-            let li = document.createElement("li")
-            newLi = messageWriter(messageProfile, li, jsonList)
-            document.querySelector("#chat").appendChild(newLi)
-            const element = document.getElementById("chat");
-            element.scrollTop = element.scrollHeight;
-        })
 
         $("#send").click((evt)=>
         {
@@ -145,6 +169,7 @@ $().ready(()=>
     $('#innerDropDown').on("click", "li", async (evt)=>
     {
         let chatList = await fetch(`/messages?username=${$(evt.currentTarget).attr("id")}`)
+        talkingToWho = $(evt.currentTarget).attr("id")
         selected = $(evt.currentTarget).attr("id")
         let jsonList = await chatList.json()
         console.log(jsonList)
@@ -168,15 +193,6 @@ $().ready(()=>
         }
         const element = document.getElementById("chat");
         element.scrollTop = element.scrollHeight;
-
-        socket.on("roomMessage", (messageProfile)=>
-        {
-            let li = document.createElement("li")
-            newLi = messageWriter(messageProfile, li)
-            document.querySelector("#chat").appendChild(newLi)
-            const element = document.getElementById("chat");
-            element.scrollTop = element.scrollHeight;
-        })
 
         $("#send").click((evt)=>
         {
