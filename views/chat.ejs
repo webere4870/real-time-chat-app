@@ -19,7 +19,7 @@
               </svg>
             <% for(let i = 0; i < notifications.length; i++) {%> 
                 <div class="notification">
-                    <p><%=notifications[i].from %>: <%=notifications[i].message %> </p>
+                    <h5 class="statusText"><%=notifications[i].from %> <%=notifications[i].message %> </h5>
                 </div>
             <% } %> 
         </div>

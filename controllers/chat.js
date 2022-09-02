@@ -78,6 +78,7 @@ router.get("/getUsername", ValidateJWT, (req, res)=>
 router.post("/notifications", ValidateJWT, async (req, res)=>
 {
     console.log(req.body)
+    let postNotification = await UserModel.updateOne({_id: req.JWT.email}, {$push: {notifications: req.body}})
     res.json({success: true})
 })
 

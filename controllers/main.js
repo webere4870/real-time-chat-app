@@ -107,7 +107,7 @@ router.get("/chat", ValidateJWT, async (req, res)=>
         let profile = await UserModel.findOne({_id: temp})
         profileObjects.push(profile)
     }
-    console.log(profileObjects)
+    console.log("Notifications" , notifications.notifications)
     res.render("chat", {chatList: profileObjects, userObject: req.JWT, notifications: notifications.notifications})
 })
 
