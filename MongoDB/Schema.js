@@ -7,7 +7,8 @@ let UserSchema = new mongoose.Schema({
     name: String,
     picture: String,
     provider: String,
-    active: Boolean
+    active: Boolean,
+    notifications: Array
 })
 
 module.exports = mongoose.model("ChatUserSchema", UserSchema)

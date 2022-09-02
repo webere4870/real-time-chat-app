@@ -75,4 +75,10 @@ router.get("/getUsername", ValidateJWT, (req, res)=>
     res.json({email: req.JWT.email})
 })
 
+router.post("/notifications", ValidateJWT, async (req, res)=>
+{
+    console.log(req.body)
+    res.json({success: true})
+})
+
 module.exports = router

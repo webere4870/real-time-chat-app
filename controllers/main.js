@@ -99,6 +99,7 @@ router.post("/login", async (req, res)=>
 
 router.get("/chat", ValidateJWT, async (req, res)=>
 {
+    let notifications = await UserModel.findOne({_id: req.JWT.email})
     let chatList = await ChatModel.where({to: req.JWT.email}).distinct("from")
     let profileObjects = []
     for(let temp of chatList)
@@ -107,7 +108,7 @@ router.get("/chat", ValidateJWT, async (req, res)=>
         profileObjects.push(profile)
     }
     console.log(profileObjects)
-    res.render("chat", {chatList: profileObjects, userObject: req.JWT})
+    res.render("chat", {chatList: profileObjects, userObject: req.JWT, notifications: notifications.notifications})
 })
 
 module.exports = router

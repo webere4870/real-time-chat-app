@@ -5,6 +5,29 @@ let currentUser = ""
 let talkingToWho = null
 let socket = io("localhost:3000")
 
+function toast(messageProfile)
+{
+    let newToast = `
+    
+        <h5 class="statusText">${messageProfile.from} sent a message</h5>
+        <svg xmlns="http://www.w3.org/2000/svg" style="margin-left: auto;" width="20" height="20" fill="white" class="bi bi-x-circle toastRemove" viewBox="0 0 16 16">
+            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+        </svg>
+    `
+    let toaster = document.createElement('div')
+    toaster.className = "toast"
+    toaster.innerHTML = newToast
+    fetch("/notifications", {
+        method: "post",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(messageProfile)
+    }).then((result)=>
+    {
+        document.querySelector("#container").prepend(toaster)
+    })
+}
+
 socket.on("roomMessage", (messageProfile)=>
 {
     console.log(messageProfile, "profiler")
@@ -28,7 +51,7 @@ socket.on("roomMessage", (messageProfile)=>
         }
         else
         {
-            alert("Stuff")
+            toast(messageProfile)
         }
     }
     
@@ -130,6 +153,18 @@ function messageWriter(message, li, jsonList)
 
 $().ready(()=>
 {
+    $("#bell").click((evt)=>
+    {
+        $("#notifications").slideToggle(300)
+    })
+    $("#bellClose").click((evt)=>
+    {   
+        $("#notifications").slideToggle(300)
+    })
+    $("#container").on("click", ".toast svg", (evt)=>
+    {
+        $(evt.currentTarget).parent().remove()
+    })
     $("#overDrop").on("click", ">li", async (evt)=>
     {
         let chatList = await fetch(`/messages?username=${$(evt.currentTarget).attr("data-id")}`)

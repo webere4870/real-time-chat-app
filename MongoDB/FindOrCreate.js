@@ -11,7 +11,7 @@ async function FindOrCreate(username, password, provider, name, picture)
             {
                 bcrypt.genSalt(10, (err, salt) => {
                     bcrypt.hash(password, salt, async function(err, hash) {
-                        let newRecord = await UserSchema.create({_id: username, hash: hash, salt: salt, name: name, picture: picture, provider: "E-Web-Software", active: false})
+                        let newRecord = await UserSchema.create({_id: username, hash: hash, salt: salt, name: name, picture: picture, provider: "E-Web-Software", active: false, notifications: []})
                         await newRecord.save()
                         resolve({accepted: true})
                     });
@@ -19,7 +19,7 @@ async function FindOrCreate(username, password, provider, name, picture)
             }
             else if(!result)
             {
-                let newRecord = await UserSchema.create({_id: username, hash: "", salt: "", picture: picture, provider: provider, name: name, active: false})
+                let newRecord = await UserSchema.create({_id: username, hash: "", salt: "", picture: picture, provider: provider, name: name, active: false, notifications: false})
                 newRecord.save()
                 resolve({accepted: true})
             }
